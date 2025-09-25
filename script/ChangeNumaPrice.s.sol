@@ -75,7 +75,7 @@ contract ChangeNumaPrice is Script {
         );
 
         // Write JSON
-        vm.writeJson(json, "./cache/snapshot.json");
+        //vm.writeJson(json, "./cache/snapshot.json");
         //vm.writeJson(json, path);
     }
     
