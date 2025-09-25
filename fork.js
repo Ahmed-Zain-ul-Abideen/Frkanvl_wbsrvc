@@ -69,7 +69,16 @@ function runSetupOld() {
         resolve(true);
       } else {
         console.log("⚠️ Setup scripts failed with code:", code);
-        resolve(false);
+        // run forge clean before retry
+        exec("forge clean", (err, stdout, stderr) => {
+          if (err) {
+            console.error("❌ forge clean failed:", stderr || err.message);
+          } else {
+            console.log("✅ forge clean done");
+            if (stdout) console.log(stdout);
+          }
+          resolve(false); // still a failure, but now cleaned for next attempt
+        });
       }
     });
   });
@@ -81,7 +90,7 @@ function runSetupOld() {
 async function retrySetupUntilSuccess() {
   let success = false;
   while (!success) {
-    success = await runSetup();
+    success = await runSetupOld();
     if (!success) {
       console.log("⏳ Retrying setup in 60 seconds...");
       await new Promise((r) => setTimeout(r, 60_000));
