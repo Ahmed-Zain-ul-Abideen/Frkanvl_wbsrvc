@@ -18,6 +18,46 @@ const args = [
 
 let anvil = spawn("anvil", args, { stdio: ["ignore", "pipe", "pipe"] });
 
+
+/**
+ * Runs npm setup scripts, retries until success
+ */
+function runSetup() {
+  return new Promise((resolve) => {
+    console.log("⚡ Running setup scripts...");
+    const setup = exec("npm run setup");
+
+    setup.stdout.on("data", (d) => process.stdout.write(d.toString()));
+    setup.stderr.on("data", (d) => process.stderr.write(d.toString()));
+
+    setup.on("close", (code) => {
+      if (code === 0) {
+        console.log("✅ Setup scripts finished successfully");
+        resolve(true);
+      } else {
+        console.log("⚠️ Setup scripts failed with code:", code);
+        resolve(false);
+      }
+    });
+  });
+}
+
+/**
+ * Retry loop: runs setup every 60s until success
+ */
+async function retrySetupUntilSuccess() {
+  let success = false;
+  while (!success) {
+    success = await runSetup();
+    if (!success) {
+      console.log("⏳ Retrying setup in 60 seconds...");
+      await new Promise((r) => setTimeout(r, 60_000));
+    }
+  }
+}
+
+
+
 // Forward stdout/stderr with prefixes
 anvil.stdout.on("data", (data) => {
   const out = data.toString();
@@ -25,19 +65,8 @@ anvil.stdout.on("data", (data) => {
 
   // Once Anvil is live, run setup scripts
   if (out.includes("Listening on")) {
-    console.log("✅ Anvil is live, running setup scripts...");
-    const setup = exec("npm run setup");
-
-    setup.stdout.on("data", (d) => process.stdout.write(d.toString()));
-    setup.stderr.on("data", (d) => process.stderr.write(d.toString()));
-    setup.on("close", (code) => {
-      if (code === 0) {
-        console.log("⚡ Setup scripts finished successfully");
-      } else {
-        console.log("⚠️ Setup scripts failed with code:", code);
-        // Don’t exit – keep Anvil alive
-      }
-    });
+    console.log("✅ Anvil is live, starting setup retry loop...");
+    retrySetupUntilSuccess();
   }
 });
 
