@@ -31,7 +31,12 @@ anvil.stdout.on("data", (data) => {
     setup.stdout.on("data", (d) => process.stdout.write(d.toString()));
     setup.stderr.on("data", (d) => process.stderr.write(d.toString()));
     setup.on("close", (code) => {
-      console.log("⚡ Setup scripts finished with code:", code);
+      if (code === 0) {
+        console.log("⚡ Setup scripts finished successfully");
+      } else {
+        console.log("⚠️ Setup scripts failed with code:", code);
+        // Don’t exit – keep Anvil alive
+      }
     });
   }
 });
