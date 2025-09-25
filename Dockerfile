@@ -25,6 +25,10 @@ COPY include ./include
 # Install Node deps
 RUN npm install
 
+
+# Install Forge deps (like forge-std)
+RUN forge install foundry-rs/forge-std --no-commit
+
 # Expose Anvil RPC port
 EXPOSE 8545
 
