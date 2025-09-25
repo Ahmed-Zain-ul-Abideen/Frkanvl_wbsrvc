@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "setup1": "forge script script/SetupAccount.s.sol:SetupAccount --rpc-url fork --broadcast --unlocked",
-    "setup2": "forge script script/SetupAccount2.s.sol:SetupAccount2 --rpc-url fork --broadcast --unlocked",
-    "setup3": "forge script script/ChangeNumaPrice.s.sol:ChangeNumaPrice --rpc-url fork --broadcast --unlocked",
+    "setup1": "forge script script/SetupAccount.s.sol:SetupAccount --rpc-url  http://127.0.0.1:8545  --broadcast --unlocked",
+    "setup2": "forge script script/SetupAccount2.s.sol:SetupAccount2 --rpc-url  http://127.0.0.1:8545  --broadcast --unlocked",
+    "setup3": "forge script script/ChangeNumaPrice.s.sol:ChangeNumaPrice --rpc-url  http://127.0.0.1:8545  --broadcast --unlocked",
     "setup": "npm run setup1 && npm run setup2 && npm run setup3",
     "start": "node fork.js"
   },
