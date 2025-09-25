@@ -1,4 +1,4 @@
-import { spawn, exec } from "child_process";
+import { spawn } from "child_process";
 
 const rpc = process.env.RPC_FOR_FORK || "https://rpc.soniclabs.com";
 const block = process.env.FORK_BLOCK || "latest";
@@ -20,20 +20,7 @@ let anvil = spawn("anvil", args, { stdio: ["ignore", "pipe", "pipe"] });
 
 // Forward stdout/stderr with prefixes
 anvil.stdout.on("data", (data) => {
-  const out = data.toString();
-  process.stdout.write(out);
-
-  // Once Anvil is live, run setup scripts
-  if (out.includes("Listening on")) {
-    console.log("✅ Anvil is live, running setup scripts...");
-    const setup = exec("npm run setup");
-
-    setup.stdout.on("data", (d) => process.stdout.write(d.toString()));
-    setup.stderr.on("data", (d) => process.stderr.write(d.toString()));
-    setup.on("close", (code) => {
-      console.log("⚡ Setup scripts finished with code:", code);
-    });
-  }
+  process.stdout.write(`[ANVIL] ${data}`);
 });
 
 anvil.stderr.on("data", (data) => {

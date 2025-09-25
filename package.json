@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "setup1": "dotenv -e .env -- forge script script/SetupAccount.s.sol:SetupAccount --rpc-url fork --broadcast --unlocked",
+    "setup2": "dotenv -e .env -- forge script script/SetupAccount2.s.sol:SetupAccount2 --rpc-url fork --broadcast --unlocked",
+    "setup3": "dotenv -e .env -- forge script script/ChangeNumaPrice.s.sol:ChangeNumaPrice --rpc-url fork --broadcast --unlocked",
+    "setup": "npm run setup1 && npm run setup2 && npm run setup3",
     "start": "node fork.js"
   },
   "dependencies": {

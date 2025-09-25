@@ -16,18 +16,17 @@ ENV PATH="/root/.foundry/bin:${PATH}"
 # Set work directory
 WORKDIR /app
 
-# Copy project files
+# Copy package metadata first (for caching)
 COPY package*.json ./
-COPY fork.js ./
-COPY script ./script
-COPY include ./include
-COPY .env ./.env
 
-# Install Node deps
+# Install Node.js dependencies
 RUN npm install
 
-# Expose Anvil RPC port
+# Copy the rest of your project files
+COPY . .
+
+# Expose Anvil’s JSON-RPC port
 EXPOSE 8545
 
-# Start Anvil (fork.js will also run setup scripts)
-CMD ["npm", "start"]
+# Start Anvil through fork.js
+CMD ["node", "fork.js"]
