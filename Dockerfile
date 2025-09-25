@@ -21,6 +21,7 @@ COPY package*.json ./
 COPY fork.js ./
 COPY script ./script
 COPY include ./include
+COPY lib ./lib
 
 # Install Node deps
 RUN npm install
