@@ -51,7 +51,7 @@ contract ChangeNumaPrice is Script {
 
 
         // for test
-        string memory path = "./snapshot.json";
+        //string memory path = "./snapshot.json";
 
         // Write JSON
         // vault balance 
@@ -75,7 +75,8 @@ contract ChangeNumaPrice is Script {
         );
 
         // Write JSON
-        vm.writeJson(json, path);
+        vm.writeJson(json, "./cache/snapshot.json");
+        //vm.writeJson(json, path);
     }
     
 }
