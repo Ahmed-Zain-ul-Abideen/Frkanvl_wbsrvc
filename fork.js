@@ -22,7 +22,40 @@ let anvil = spawn("anvil", args, { stdio: ["ignore", "pipe", "pipe"] });
 /**
  * Runs npm setup scripts, retries until success
  */
+
 function runSetup() {
+  return new Promise((resolve) => {
+    console.log("⚡ Running setup scripts...");
+    const setup = exec("npm run setup");
+
+    let sawSuccessLog = false;
+
+    setup.stdout.on("data", (d) => {
+      const out = d.toString();
+      process.stdout.write(out);
+
+      if (out.includes("Script ran successfully")) {
+        sawSuccessLog = true;
+      }
+    });
+
+    setup.stderr.on("data", (d) => process.stderr.write(d.toString()));
+
+    setup.on("close", (code) => {
+      if (code === 0 || sawSuccessLog) {
+        console.log("✅ Setup scripts finished successfully (stopping retries)");
+        resolve(true);
+      } else {
+        console.log("⚠️ Setup scripts failed with code:", code);
+        resolve(false);
+      }
+    });
+  });
+}
+
+
+
+function runSetupOld() {
   return new Promise((resolve) => {
     console.log("⚡ Running setup scripts...");
     const setup = exec("npm run setup");
